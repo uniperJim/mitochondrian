@@ -1,5 +1,6 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import HelpModal from "./HelpModal";
 
 /**
  * ESCAPE THE MITOCHONDRION — Prototype (Option A: Map Escape Room)
@@ -228,6 +229,16 @@ export default function MetabolicEscapePrototype() {
     "You awaken inside a cell with failing energy balance. Restore ATP and reach the nuclear exit.",
   ]);
   const [currentEvent, setCurrentEvent] = useState(null);
+  const [helpOpen, setHelpOpen] = useState(false);
+
+  useEffect(() => {
+    if (!helpOpen) return;
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setHelpOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [helpOpen]);
 
   const derived = useMemo(() => {
     const etcBlocked = s.flags.hypoxia || s.flags.cyanide || s.O2 === 0;
@@ -626,6 +637,7 @@ export default function MetabolicEscapePrototype() {
 
   return (
     <div className="min-h-screen bg-[#070A12] text-white">
+      <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
       {/* Background glow */}
       <div className="pointer-events-none fixed inset-0">
         <div className="absolute -top-40 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full blur-3xl opacity-40 bg-gradient-to-r from-sky-500/40 via-fuchsia-500/30 to-emerald-500/30" />
@@ -650,6 +662,12 @@ export default function MetabolicEscapePrototype() {
               <Badge>Actions {s.actionsLeft}</Badge>
               <Badge>Flags {s.failureFlags}/3</Badge>
               <span className="text-sm text-white/80">{headerStatus.text}</span>
+              <button
+                onClick={() => setHelpOpen(true)}
+                className="ml-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 px-3 py-1.5 text-xs"
+              >
+                Help
+              </button>
               <button
                 onClick={reset}
                 className="ml-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 px-3 py-1.5 text-xs"
