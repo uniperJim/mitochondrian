@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function HelpModal({ open, onClose }) {
+export default function HelpModal({ open, onClose, cellImageUrl, onOpenCellImage }) {
   useEffect(() => {
     if (!open) return;
     const onKeyDown = (e) => {
@@ -60,6 +60,37 @@ export default function HelpModal({ open, onClose }) {
               </div>
 
               <div className="p-5 md:p-7 overflow-y-auto max-h-[calc(100vh-120px)] md:max-h-[calc(100vh-180px)]">
+                {cellImageUrl ? (
+                  <div className="mb-4 rounded-2xl border border-white/10 bg-black/20 p-4">
+                    <div className="flex items-center justify-between gap-3">
+                      <div className="text-sm font-semibold text-white/90">Zell-Diagramm</div>
+                      <button
+                        type="button"
+                        onClick={onOpenCellImage}
+                        className="rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 px-3 py-1.5 text-xs"
+                      >
+                        Vollbild öffnen
+                      </button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={onOpenCellImage}
+                      className="mt-3 block w-full overflow-hidden rounded-2xl border border-white/10 bg-white/5"
+                      aria-label="Open cell image full screen"
+                    >
+                      <img
+                        src={cellImageUrl}
+                        alt="Cell diagram"
+                        className="block w-full h-auto"
+                        loading="lazy"
+                      />
+                    </button>
+                    <div className="mt-2 text-xs text-white/60">
+                      Tipp: Klicke auf das Bild, um es im Vollbild zu sehen.
+                    </div>
+                  </div>
+                ) : null}
+
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                   <section className="rounded-2xl border border-white/10 bg-gradient-to-br from-sky-500/10 via-white/0 to-indigo-500/10 p-4">
                     <h2 className="text-sm font-semibold text-white/90">What’s the goal?</h2>

@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import HelpModal from "./HelpModal";
+import ImageLightbox from "./ImageLightbox";
 
 /**
  * ESCAPE THE MITOCHONDRION — Prototype (Option A: Map Escape Room)
@@ -230,6 +231,12 @@ export default function MetabolicEscapePrototype() {
   ]);
   const [currentEvent, setCurrentEvent] = useState(null);
   const [helpOpen, setHelpOpen] = useState(false);
+  const [cellImageOpen, setCellImageOpen] = useState(false);
+
+  const cellImageUrl = useMemo(() => {
+    // Works for both dev (/) and GitHub Pages (/mitochondrian/) via Vite base URL.
+    return new URL("cell.png", import.meta.env.BASE_URL).toString();
+  }, []);
 
   useEffect(() => {
     if (!helpOpen) return;
@@ -637,7 +644,18 @@ export default function MetabolicEscapePrototype() {
 
   return (
     <div className="min-h-screen bg-[#070A12] text-white">
-      <HelpModal open={helpOpen} onClose={() => setHelpOpen(false)} />
+      <ImageLightbox
+        open={cellImageOpen}
+        title="Cell diagram"
+        src={cellImageUrl}
+        onClose={() => setCellImageOpen(false)}
+      />
+      <HelpModal
+        open={helpOpen}
+        onClose={() => setHelpOpen(false)}
+        cellImageUrl={cellImageUrl}
+        onOpenCellImage={() => setCellImageOpen(true)}
+      />
       {/* Background glow */}
       <div className="pointer-events-none fixed inset-0">
         <div className="absolute -top-40 left-1/2 h-[520px] w-[820px] -translate-x-1/2 rounded-full blur-3xl opacity-40 bg-gradient-to-r from-sky-500/40 via-fuchsia-500/30 to-emerald-500/30" />
@@ -658,6 +676,15 @@ export default function MetabolicEscapePrototype() {
 
           <div className={`rounded-2xl border px-4 py-3 ${headerStatus.tone}`}>
             <div className="flex items-center gap-3">
+              <button
+                type="button"
+                onClick={() => setCellImageOpen(true)}
+                className="rounded-xl overflow-hidden border border-white/10 bg-white/5 hover:bg-white/10"
+                title="Open cell diagram"
+                aria-label="Open cell diagram"
+              >
+                <img src={cellImageUrl} alt="Cell diagram" className="h-8 w-8 object-cover" />
+              </button>
               <Badge>Turn {s.turn}/{s.maxTurns}</Badge>
               <Badge>Actions {s.actionsLeft}</Badge>
               <Badge>Flags {s.failureFlags}/3</Badge>
