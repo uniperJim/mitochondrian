@@ -234,8 +234,9 @@ export default function MetabolicEscapePrototype() {
   const [cellImageOpen, setCellImageOpen] = useState(false);
 
   const cellImageUrl = useMemo(() => {
-    // Works for both dev (/) and GitHub Pages (/mitochondrian/) via Vite base URL.
-    return new URL("cell.png", import.meta.env.BASE_URL).toString();
+    // Works for both dev (/) and GitHub Pages (/mitochondrian/).
+    // Note: BASE_URL is a path, not an absolute URL, so avoid new URL(..., BASE_URL).
+    return `${import.meta.env.BASE_URL}cell.png`;
   }, []);
 
   useEffect(() => {
